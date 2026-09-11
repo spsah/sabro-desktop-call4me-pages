@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Call4Me SDK sample</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 32px 16px;
+        background: #eef0f4;
+        color: #1c1c1c;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      .sample {
+        width: min(620px, 100%);
+        margin: 0 auto;
+      }
+      .sample > p {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sample">
+      <h1>Call a customer</h1>
+      <p>This page mounts the SABRO calling widget with one script.</p>
+      <div id="call4me"></div>
+    </main>
+    <script src="./call4me-sdk.js"></script>
+    <script>
+      SABRO.Call4Me.mount("#call4me", { theme: "sabro" });
+    </script>
+  </body>
+</html>
