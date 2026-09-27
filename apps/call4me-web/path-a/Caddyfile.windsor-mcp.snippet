@@ -1,0 +1,36 @@
+# SABRO Path A — same-origin Windsor MCP proxy
+# Preferred host: crm.sabro.cloud (existing Caddy + /login/ + /call4me/).
+# Place this block BEFORE the catch-all redir to /login/.
+# Do not attach to github.io. Do not forward SABRO Identity / Twenty cookies.
+# No secrets in this file.
+
+handle /windsor-mcp {
+	redir * /windsor-mcp/ 308
+}
+
+handle_path /windsor-mcp/* {
+	reverse_proxy https://mcp.windsor.ai {
+		header_up Host mcp.windsor.ai
+		# Cookie is SABRO/Twenty session — never forward. Authorization is the
+		# Windsor OAuth bearer and must reach mcp.windsor.ai or tools/call 401s.
+		header_up Authorization {http.request.header.Authorization}
+		header_up MCP-Protocol-Version {http.request.header.MCP-Protocol-Version}
+		header_up Mcp-Session-Id {http.request.header.Mcp-Session-Id}
+		header_up Accept {http.request.header.Accept}
+		header_up Content-Type {http.request.header.Content-Type}
+		header_up -Cookie
+		header_up -Cookie2
+		header_down -Set-Cookie
+		header_down Cache-Control "no-store"
+		header_down Access-Control-Expose-Headers "Mcp-Session-Id, mcp-session-id"
+	}
+}
+
+# Page: rebuild @sabro/call4me-web and rsync dist into the existing /call4me/
+# file root so https://crm.sabro.cloud/call4me/windsor.html is served.
+# That page already Identity-gates itself; do not send it through /login/.
+# If windsor.html is published at the site root instead, allow these without
+# the login redirect:
+#
+# handle /windsor.html
+# handle /windsor-callback.html

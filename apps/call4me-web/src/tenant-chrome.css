@@ -1,0 +1,412 @@
+/* Tenant path chrome — ported Amplify Light-CRM tokens (dark navy + teal).
+   Imported only by c-main.tsx. Amplify has no light prefers-color-scheme —
+   dark-only tokens below; light media query provides a sensible fallback. */
+
+:root {
+  --tenant-bg-primary: #0b1120;
+  --tenant-bg-secondary: #111827;
+  --tenant-bg-card: #1a2332;
+  --tenant-bg-card-hover: #1f2b3d;
+  --tenant-text-primary: #f1f5f9;
+  --tenant-text-secondary: #94a3b8;
+  --tenant-text-tertiary: #64748b;
+  --tenant-text-muted: #475569;
+  --tenant-accent-teal: #14b8a6;
+  --tenant-accent-teal-light: #2dd4bf;
+  --tenant-accent-blue: #3b82f6;
+  --tenant-border-color: rgba(148, 163, 184, 0.1);
+  --tenant-border-color-hover: rgba(148, 163, 184, 0.2);
+  --tenant-space-xs: 4px;
+  --tenant-space-sm: 8px;
+  --tenant-space-md: 16px;
+  --tenant-space-lg: 24px;
+  --tenant-space-xl: 32px;
+  --tenant-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --tenant-font-size-xs: 0.6875rem;
+  --tenant-font-size-sm: 0.75rem;
+  --tenant-font-size-base: 0.8125rem;
+  --tenant-font-size-md: 0.875rem;
+  --tenant-font-size-lg: 1rem;
+  --tenant-font-size-2xl: 1.5rem;
+  --tenant-radius-sm: 6px;
+  --tenant-radius-md: 8px;
+  --tenant-radius-lg: 12px;
+  --tenant-transition-fast: 150ms ease;
+  --tenant-transition-base: 250ms ease;
+  --tenant-sidebar-width: 260px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: var(--tenant-font-family);
+  background: var(--tenant-bg-primary);
+  color: var(--tenant-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--tenant-accent-teal);
+  text-decoration: none;
+}
+
+/* ── Deny / auth (no tenant chrome) ─────────────────────────── */
+.tenant-deny,
+.tenant-auth,
+.tenant-loading {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: var(--tenant-space-lg);
+  text-align: center;
+  gap: var(--tenant-space-md);
+}
+
+.tenant-auth {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.tenant-auth label {
+  display: grid;
+  gap: var(--tenant-space-xs);
+  font-size: var(--tenant-font-size-sm);
+  color: var(--tenant-text-secondary);
+}
+
+.tenant-auth input {
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--tenant-radius-md);
+  border: 1px solid var(--tenant-border-color-hover);
+  background: var(--tenant-bg-secondary);
+  color: var(--tenant-text-primary);
+  font-size: 16px;
+}
+
+.tenant-auth button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--tenant-radius-md);
+  background: var(--tenant-accent-teal);
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tenant-auth button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── App layout ─────────────────────────────────────────────── */
+.tenant-app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.tenant-main-content {
+  flex: 1;
+  margin-left: var(--tenant-sidebar-width);
+  padding: var(--tenant-space-lg);
+  min-height: 100vh;
+  max-width: calc(100vw - var(--tenant-sidebar-width));
+  min-width: 0;
+}
+
+/* ── Sidebar (Amplify structure) ────────────────────────────── */
+.tenant-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--tenant-sidebar-width);
+  height: 100vh;
+  background: var(--tenant-bg-secondary);
+  border-right: 1px solid var(--tenant-border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.tenant-sidebar-header {
+  padding: var(--tenant-space-lg);
+  border-bottom: 1px solid var(--tenant-border-color);
+}
+
+.tenant-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--tenant-space-sm);
+  min-width: 0;
+}
+
+.tenant-sidebar-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--tenant-accent-teal), var(--tenant-accent-blue));
+  border-radius: var(--tenant-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tenant-font-size-lg);
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.tenant-sidebar-logo-text h1 {
+  margin: 0;
+  font-size: var(--tenant-font-size-md);
+  font-weight: 700;
+  color: var(--tenant-text-primary);
+  letter-spacing: -0.025em;
+}
+
+.tenant-sidebar-logo-text span {
+  display: block;
+  font-size: var(--tenant-font-size-xs);
+  color: var(--tenant-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tenant-sidebar-nav {
+  flex: 1;
+  padding: var(--tenant-space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tenant-space-xs);
+}
+
+.tenant-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--tenant-space-sm);
+  padding: 10px var(--tenant-space-md);
+  border-radius: var(--tenant-radius-md);
+  color: var(--tenant-text-secondary);
+  font-size: var(--tenant-font-size-base);
+  font-weight: 500;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all var(--tenant-transition-fast);
+}
+
+.tenant-nav-item:hover {
+  background: var(--tenant-bg-card);
+  color: var(--tenant-text-primary);
+  border-color: var(--tenant-border-color);
+}
+
+.tenant-nav-item.active {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.12), rgba(59, 130, 246, 0.08));
+  color: var(--tenant-accent-teal);
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+.tenant-nav-item-icon {
+  font-size: var(--tenant-font-size-lg);
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tenant-sidebar-footer {
+  padding: var(--tenant-space-md) var(--tenant-space-lg);
+  border-top: 1px solid var(--tenant-border-color);
+}
+
+.tenant-sidebar-footer-info {
+  font-size: var(--tenant-font-size-xs);
+  color: var(--tenant-text-muted);
+  line-height: 1.5;
+}
+
+.tenant-sidebar-footer-info strong {
+  color: var(--tenant-text-tertiary);
+}
+
+/* ── Page header + empty card ───────────────────────────────── */
+.tenant-page-header {
+  margin-bottom: var(--tenant-space-lg);
+}
+
+.tenant-page-title {
+  margin: 0;
+  font-size: var(--tenant-font-size-2xl);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  background: linear-gradient(135deg, var(--tenant-text-primary), var(--tenant-accent-teal-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tenant-card {
+  background: var(--tenant-bg-card);
+  border: 1px solid var(--tenant-border-color);
+  border-radius: var(--tenant-radius-lg);
+  overflow: hidden;
+}
+
+.tenant-card-body {
+  padding: var(--tenant-space-xl) var(--tenant-space-lg);
+  text-align: center;
+  color: var(--tenant-text-muted);
+}
+
+.tenant-card-body [role="status"] {
+  margin: var(--tenant-space-sm) 0 0;
+  color: var(--tenant-text-secondary);
+}
+
+/* ── Call4Me tabs (L0 Apple-clean IA; nested Contacts — no /contacts route) */
+.tenant-call4me-tabs {
+  display: inline-flex;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: var(--tenant-radius-md);
+  overflow: hidden;
+  margin-bottom: var(--tenant-space-md);
+}
+
+.tenant-call4me-tab {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  border-left: 1px solid rgba(148, 163, 184, 0.25);
+  cursor: pointer;
+  background: var(--tenant-bg-secondary);
+  color: var(--tenant-text-secondary);
+}
+
+.tenant-call4me-tab:first-child {
+  border-left: none;
+}
+
+.tenant-call4me-tab[aria-selected="true"] {
+  background: var(--tenant-accent-teal);
+  color: #0f172a;
+}
+
+/* ── Mobile (<768px): bottom bar, 16px gutters, no horizontal page scroll */
+@media (max-width: 767px) {
+  .tenant-app-layout {
+    flex-direction: column;
+  }
+
+  .tenant-sidebar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 65px;
+    background: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(12px);
+    border-right: none;
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+    z-index: 1000;
+  }
+
+  .tenant-sidebar-header,
+  .tenant-sidebar-footer {
+    display: none;
+  }
+
+  .tenant-sidebar-nav {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .tenant-nav-item {
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    gap: 4px;
+    font-size: 10px;
+    border: none !important;
+    background: none !important;
+  }
+
+  .tenant-nav-item-icon {
+    font-size: 20px;
+    width: auto;
+  }
+
+  .tenant-nav-item span:not(.tenant-nav-item-icon) {
+    display: block;
+    line-height: 1;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 500;
+  }
+
+  .tenant-nav-item.active {
+    color: var(--tenant-accent-teal);
+  }
+
+  .tenant-main-content {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100vw;
+    padding: var(--tenant-space-md);
+    padding-bottom: 85px;
+    min-height: calc(100vh - 65px);
+  }
+}
+
+/* Amplify is dark-only; provide a readable light fallback if preferred. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --tenant-bg-primary: #f8fafc;
+    --tenant-bg-secondary: #ffffff;
+    --tenant-bg-card: #ffffff;
+    --tenant-bg-card-hover: #f1f5f9;
+    --tenant-text-primary: #0f172a;
+    --tenant-text-secondary: #475569;
+    --tenant-text-tertiary: #64748b;
+    --tenant-text-muted: #94a3b8;
+    --tenant-border-color: rgba(15, 23, 42, 0.08);
+    --tenant-border-color-hover: rgba(15, 23, 42, 0.16);
+  }
+
+  body {
+    background: var(--tenant-bg-primary);
+    color: var(--tenant-text-primary);
+  }
+
+  .tenant-page-title {
+    background: none;
+    -webkit-text-fill-color: var(--tenant-text-primary);
+    color: var(--tenant-text-primary);
+  }
+
+  @media (max-width: 767px) {
+    .tenant-sidebar {
+      background: rgba(255, 255, 255, 0.95);
+      border-top: 1px solid var(--tenant-border-color);
+    }
+  }
+}

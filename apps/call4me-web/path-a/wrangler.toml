@@ -1,0 +1,15 @@
+name = "sabro-windsor-web"
+main = "./worker.ts"
+compatibility_date = "2026-09-13"
+workers_dev = true
+
+# Path A host: static Identity-gated windsor.html + same-origin /windsor-mcp
+# and /aigate proxies. No secrets. Do not put tokens, OTP, or API keys here.
+# APPLY: npx wrangler deploy --config apps/call4me-web/path-a/wrangler.toml
+# after `pnpm --filter @sabro/call4me-web build` (needs dist/). Preferred
+# custom domain: app.sabro.cloud. AIGATE_AUTH_TOKEN is a Worker secret.
+
+[assets]
+directory = "../dist"
+binding = "ASSETS"
+run_worker_first = ["/windsor-mcp", "/windsor-mcp/*", "/aigate", "/aigate/*"]

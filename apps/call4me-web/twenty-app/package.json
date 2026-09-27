@@ -1,0 +1,30 @@
+{
+  "name": "@sabro/call4me-twenty",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^24.5.0",
+    "npm": "please-use-yarn",
+    "yarn": ">=4.0.2",
+    "twenty": ">=2.39.0"
+  },
+  "packageManager": "yarn@4.13.0",
+  "frontComponentSharedDependencies": [
+    "react",
+    "react-dom/client"
+  ],
+  "scripts": {
+    "twenty": "twenty",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "twenty-sdk": "2.39.0",
+    "typescript": "^5.9.3"
+  }
+}

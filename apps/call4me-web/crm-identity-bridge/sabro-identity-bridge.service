@@ -1,0 +1,21 @@
+[Unit]
+Description=SABRO Identity to Twenty session bridge
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+EnvironmentFile=/opt/sabro/secure/sabro-identity-bridge.env
+ExecStart=/usr/bin/python3 /opt/sabro/identity-bridge/server.py
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/sabro-identity-bridge
+
+[Install]
+WantedBy=multi-user.target

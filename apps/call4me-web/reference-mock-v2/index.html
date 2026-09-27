@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Call4Me</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="stage">
+    <p class="chrome">siptrunk.ai · mock · not live</p>
+
+    <div class="phone">
+      <header class="top">
+        <div>
+          <p class="brand">Call4Me</p>
+          <h1>Today</h1>
+        </div>
+        <div class="toggle" id="modeToggle" role="tablist" aria-label="How to place the call">
+          <button type="button" data-mode="web" class="on">Web</button>
+          <button type="button" data-mode="phone">Phone</button>
+        </div>
+      </header>
+
+      <p class="lede" id="lede">Calls for you from the list you uploaded. Tap a name — we present your cloud number, not your SIM.</p>
+
+      <section class="page on" id="page-calls">
+        <div class="incall" id="inCall" hidden>
+          <div class="initials" id="avatar">RK</div>
+          <h2 id="partyName">Rahul Kumar</h2>
+          <p class="meta" id="partyMeta">•••• 4821 · Web · 00:00</p>
+          <ol class="steps" id="phoneSteps" hidden>
+            <li class="done">Your phone is ringing</li>
+            <li class="now">Answer it</li>
+            <li>We connect them</li>
+          </ol>
+          <div class="row">
+            <button type="button" class="ghost" id="mute">Mute</button>
+            <button type="button" class="end" id="end">End</button>
+          </div>
+        </div>
+
+        <ul class="list" id="todayList"></ul>
+      </section>
+
+      <section class="page" id="page-contacts">
+        <div class="import">
+          <label class="file">
+            Upload contacts
+            <input type="file" id="importFile" accept=".csv,text/csv,.vcf,text/vcard" />
+          </label>
+          <p class="hint" id="importHint">CSV or contacts file. Nothing leaves this page.</p>
+        </div>
+        <ul class="list" id="allList"></ul>
+      </section>
+
+      <section class="sheet" id="padSheet" hidden>
+        <div class="sheet-head">
+          <span>Unknown number</span>
+          <button type="button" class="text" id="closePad">Done</button>
+        </div>
+        <p class="digits" id="digits"> </p>
+        <div class="pad" id="pad"></div>
+        <div class="row">
+          <button type="button" class="text" id="bksp">Delete</button>
+          <button type="button" class="call" id="callUnknown">Call</button>
+        </div>
+        <p class="hint">* and # are tones. End hangs up.</p>
+      </section>
+
+      <nav class="bar">
+        <button type="button" class="tab on" data-go="calls">Calls</button>
+        <button type="button" class="tab" data-go="contacts">Contacts</button>
+        <button type="button" class="tab quiet" id="openPad">Pad</button>
+      </nav>
+
+      <div class="toast" id="toast" hidden></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

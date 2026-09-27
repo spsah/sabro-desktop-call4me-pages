@@ -1,0 +1,53 @@
+# SABRO shell-chat cutover — app.sabro.cloud
+# CoS APPLY. This agent cannot bind DNS or edit live Caddy.
+# Live SoR for app.sabro.cloud Call4Me is Caddy + rsync on sabro-crm-twenty-01
+# to /opt/sabro/call4me — NOT wrangler.
+#
+#   VITE_SUPABASE_PUBLISHABLE_KEY=... pnpm --filter @sabro/call4me-web build
+#   rsync -av --delete apps/call4me-web/dist/ sabro-crm-twenty-01:/opt/sabro/call4me/
+#
+# Serve apps/call4me-web/dist/ as the site root. Same-origin /windsor-mcp
+# and /aigate are required. No secrets in this file.
+#
+#   handle /windsor-mcp  + handle_path /windsor-mcp/*  → mcp.windsor.ai
+#   (copy from Caddyfile.windsor-mcp.snippet)
+#
+# Aigate: inject the host token from the environment. Never commit it.
+
+handle / {
+	rewrite * /windsor.html
+	file_server
+}
+
+handle /aigate {
+	redir * /aigate/ 308
+}
+
+handle_path /aigate/* {
+	reverse_proxy https://bridge.makh.ai {
+		header_up Host bridge.makh.ai
+		header_up Authorization "Bearer {env.AIGATE_AUTH_TOKEN}"
+		header_up x-api-key {env.AIGATE_AUTH_TOKEN}
+		header_up Accept {http.request.header.Accept}
+		header_up Content-Type {http.request.header.Content-Type}
+		header_up anthropic-version {http.request.header.anthropic-version}
+		header_up -Cookie
+		header_up -Cookie2
+		header_down -Set-Cookie
+		header_down Cache-Control "no-store"
+	}
+}
+
+
+# Stage A path-tenant shells: serve built c.html for any /c/* path.
+# Internal rewrite only — browser URL and location.pathname stay /c/<clientId>/...
+# Repo-file only; live Caddy reload is on HOLD until CTO pastes the live site block.
+# Do not strip /c/<id>. Ice != MMPL.
+handle /c/* {
+	rewrite * /c.html
+	file_server
+}
+
+# Call4Me shelf iframe uses /index.html — serve that file, do not rewrite it
+# to windsor.html. Page files already Identity-gate themselves; do not send
+# windsor.html through /login/. Ice tenants are not MMPL.
