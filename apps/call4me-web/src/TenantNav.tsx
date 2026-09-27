@@ -1,11 +1,16 @@
 import type { MouseEvent } from "react";
 
-/** PM-ACCEPTED route table only — do not add Overview / Daily Missions / Product / P&L. */
+/**
+ * Amplify Sales Execution OS nav parity minus Product GP% / P&L (FuseBase-later).
+ * Overview + Daily Missions restored for path-MT IA.
+ */
 export const TENANT_NAV_ITEMS = [
+  { label: "Overview", surface: "overview", icon: "📊" },
   { label: "Pipeline", surface: "pipeline", icon: "🔀" },
-  { label: "Deal Management", surface: "deals", icon: "💼" },
+  { label: "Daily Missions", surface: "missions", icon: "🎯" },
   { label: "AI Insights", surface: "insights", icon: "🤖" },
   { label: "Call4Me", surface: "call4me", icon: "📞" },
+  { label: "Deal Management", surface: "deals", icon: "💼" },
 ] as const;
 
 export type TenantNavSurface = (typeof TENANT_NAV_ITEMS)[number]["surface"];

@@ -17,7 +17,7 @@ export const DEFAULT_TENANT_SURFACE = "pipeline" as const;
 
 /** Four digits, no leading zero (stricter than bare \\d{4} — rejects 0640-style junk). */
 const CLIENT_ID_RE = /^[1-9]\d{3}$/;
-const KNOWN_SURFACES = new Set(["pipeline", "deals", "insights", "call4me"]);
+const KNOWN_SURFACES = new Set(["overview", "pipeline", "missions", "deals", "insights", "call4me"]);
 
 export type TenantSurface =
   | "pipeline"

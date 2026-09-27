@@ -26,13 +26,15 @@ function sessionWithClients(clientIds: unknown): Session {
 }
 
 const ACCEPTED_NAV = [
+  { label: "Overview", surface: "overview" },
   { label: "Pipeline", surface: "pipeline" },
-  { label: "Deal Management", surface: "deals" },
+  { label: "Daily Missions", surface: "missions" },
   { label: "AI Insights", surface: "insights" },
   { label: "Call4Me", surface: "call4me" },
+  { label: "Deal Management", surface: "deals" },
 ] as const;
 
-const FORBIDDEN_IA = ["Overview", "Daily Missions", "Product GP%", "P&L", "Product", "P&L"];
+const FORBIDDEN_IA = ["Product GP%", "P&L", "Product"];
 
 function ShellHarness({
   initialPath,
@@ -69,7 +71,7 @@ describe("TenantChrome Stage B", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders exactly four nav items with /c/<clientId>/ hrefs and active state", () => {
+  it("renders Amplify nav parity (six items) with /c/<clientId>/ hrefs and active state", () => {
     render(
       <TenantShell
         pathname="/c/6402/pipeline"
@@ -79,7 +81,7 @@ describe("TenantChrome Stage B", () => {
 
     const nav = screen.getByRole("navigation", { name: /tenant/i });
     const links = within(nav).getAllByRole("link");
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(6);
 
     for (const item of ACCEPTED_NAV) {
       const link = within(nav).getByRole("link", { name: new RegExp(item.label, "i") });
@@ -186,7 +188,7 @@ describe("TenantChrome Stage B", () => {
 
   it("performs zero fetch calls on every allowed shell", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
-    const surfaces = ["pipeline", "deals", "insights", "call4me"] as const;
+    const surfaces = ["overview", "pipeline", "missions", "deals", "insights", "call4me"] as const;
 
     for (const surface of surfaces) {
       fetchSpy.mockClear();
@@ -203,16 +205,18 @@ describe("TenantChrome Stage B", () => {
     }
   });
 
-  it("does not render parked IA items (Overview, Daily Missions, Product, P&L)", () => {
+  it("keeps Overview and Daily Missions; hides Product/P&L", () => {
     render(
       <TenantShell
         pathname="/c/6402/pipeline"
         identityAppMetadata={sessionWithClients([6402]).user.app_metadata}
       />,
     );
+    const nav = screen.getByRole("navigation", { name: /tenant/i });
+    expect(within(nav).getByRole("link", { name: /^overview$/i })).toBeInTheDocument();
+    expect(within(nav).getByRole("link", { name: /daily missions/i })).toBeInTheDocument();
     for (const label of FORBIDDEN_IA) {
-      expect(screen.queryByText(label)).not.toBeInTheDocument();
-      expect(screen.queryByRole("link", { name: new RegExp(`^${label}$`, "i") })).not.toBeInTheDocument();
+      expect(within(nav).queryByRole("link", { name: new RegExp("^" + label + "$", "i") })).not.toBeInTheDocument();
     }
   });
 

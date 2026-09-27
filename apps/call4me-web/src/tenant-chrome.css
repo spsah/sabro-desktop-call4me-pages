@@ -410,3 +410,212 @@ a {
     }
   }
 }
+
+/* ── Amplify pipeline kanban port ───────────────────────────── */
+.tenant-page-subtitle {
+  margin: 6px 0 0;
+  color: var(--tenant-text-secondary);
+  font-size: var(--tenant-font-size-sm);
+}
+.pipeline-board-meta {
+  color: var(--tenant-text-secondary);
+  font-size: var(--tenant-font-size-sm);
+  font-weight: 600;
+}
+.tenant-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tenant-space-md);
+}
+.kanban-scroll { overflow-x: auto; width: 100%; }
+.kanban-board {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  min-width: min-content;
+}
+.kanban-column {
+  flex: 1 1 0;
+  min-width: 180px;
+  background: var(--tenant-bg-secondary);
+  border: 1px solid var(--tenant-border-color);
+  border-radius: var(--tenant-radius-lg);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 160px);
+}
+.kanban-column.drag-over {
+  border-color: var(--tenant-accent-teal);
+  box-shadow: inset 0 0 0 1px rgba(20, 184, 166, 0.35);
+}
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--tenant-border-color);
+}
+.kanban-stage-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.kanban-column-header strong {
+  font-size: var(--tenant-font-size-xs);
+  color: var(--tenant-text-primary);
+}
+.kanban-column-count {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--tenant-text-muted);
+  background: var(--tenant-bg-card);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.kanban-stage-prob { font-size: 11px; color: var(--tenant-text-muted); }
+.kanban-column-body {
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+}
+.kanban-card {
+  text-align: left;
+  width: 100%;
+  background: var(--tenant-bg-card);
+  border: 1px solid var(--tenant-border-color);
+  border-radius: var(--tenant-radius-md);
+  padding: 10px;
+  color: var(--tenant-text-primary);
+  cursor: grab;
+  display: grid;
+  gap: 4px;
+}
+.kanban-card:hover {
+  border-color: var(--tenant-border-color-hover);
+  background: var(--tenant-bg-card-hover);
+}
+.kanban-card.dragging { opacity: 0.55; }
+.kanban-card-title { font-size: var(--tenant-font-size-sm); font-weight: 700; }
+.kanban-card-company { font-size: 11px; color: var(--tenant-text-secondary); }
+.kanban-card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--tenant-text-muted);
+}
+.kanban-card-row strong { color: var(--tenant-accent-teal-light); }
+.kanban-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--tenant-text-muted);
+}
+.kanban-priority-hot { color: #f97316; font-weight: 700; }
+.kanban-priority-warm { color: #eab308; font-weight: 700; }
+.kanban-priority-cold { color: #38bdf8; font-weight: 700; }
+.kanban-drop-hint {
+  text-align: center;
+  padding: 28px 8px;
+  color: var(--tenant-text-muted);
+  font-size: 11px;
+  border: 1px dashed rgba(148,163,184,0.15);
+  border-radius: 8px;
+}
+.deal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.65);
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+  padding: 16px;
+}
+.deal-modal {
+  width: min(480px, 100%);
+  background: var(--tenant-bg-secondary);
+  border: 1px solid var(--tenant-border-color-hover);
+  border-radius: var(--tenant-radius-lg);
+  padding: 16px;
+}
+.deal-modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+.deal-modal-header h2 { margin: 0; font-size: 1.1rem; }
+.deal-modal-header p {
+  margin: 4px 0 0;
+  color: var(--tenant-text-secondary);
+  font-size: 13px;
+}
+.deal-modal-close,
+.deal-modal-primary {
+  border: none;
+  border-radius: var(--tenant-radius-md);
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.deal-modal-close {
+  background: var(--tenant-bg-card);
+  color: var(--tenant-text-secondary);
+}
+.deal-modal-primary {
+  background: var(--tenant-accent-teal);
+  color: #0f172a;
+}
+.deal-modal-body {
+  margin: 16px 0;
+  color: var(--tenant-text-secondary);
+  font-size: 13px;
+}
+.deal-modal-footer { display: flex; justify-content: flex-end; }
+
+/* ── Overview ───────────────────────────────────────────────── */
+.overview-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: var(--tenant-space-lg);
+}
+.overview-kpi {
+  background: var(--tenant-bg-card);
+  border: 1px solid var(--tenant-border-color);
+  border-radius: var(--tenant-radius-lg);
+  padding: 16px;
+}
+.overview-kpi-label {
+  display: block;
+  font-size: 11px;
+  color: var(--tenant-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.overview-kpi-value {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.4rem;
+  color: var(--tenant-text-primary);
+}
+.overview-cta-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--tenant-radius-md);
+  background: var(--tenant-accent-teal);
+  color: #0f172a;
+  font-weight: 700;
+}
+@media (max-width: 767px) {
+  .overview-kpi-grid { grid-template-columns: 1fr; }
+  .tenant-page-header { flex-direction: column; }
+}

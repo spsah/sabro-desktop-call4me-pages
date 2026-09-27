@@ -14,7 +14,9 @@ describe("parseTenantPath", () => {
     });
   });
 
-  it("parses deals, insights, and call4me surfaces", () => {
+  it("parses overview, missions, deals, insights, and call4me surfaces", () => {
+    expect(parseTenantPath("/c/6402/overview")?.surface).toBe("overview");
+    expect(parseTenantPath("/c/6402/missions")?.surface).toBe("missions");
     expect(parseTenantPath("/c/6401/deals")?.surface).toBe("deals");
     expect(parseTenantPath("/c/6400/insights")?.surface).toBe("insights");
     expect(parseTenantPath("/c/6403/call4me")?.surface).toBe("call4me");

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Call4Me } from "./sdk";
+import { OverviewSurface } from "./OverviewSurface";
+import { PipelineBoard } from "./PipelineBoard";
 import { emptyBrandLookup, resolveClientBrandLabel, type BrandLookup } from "./tenant-brand";
 import { resolveTenantViaBridge } from "./tenant-map";
 import { TenantNav, type TenantNavSurface } from "./TenantNav";
@@ -12,26 +14,23 @@ import {
 
 export type TenantShellProps = {
   pathname: string;
-  /** Injected Identity app_metadata for tests / host; null = unauthenticated. */
   identityAppMetadata: Record<string, unknown> | null;
-  /** SABRO Identity access_token for the same-origin tenant-map bridge. */
   accessToken?: string | null;
-  /** Injectable fetch for tests; production uses global fetch. */
   fetchImpl?: typeof fetch;
-  /** Optional history.replace hook (defaults to window.history.replaceState). */
   onRedirect?: (path: string) => void;
-  /** In-app navigation (pushState); every path is re-evaluated by the same guard. */
   onNavigate?: (path: string) => void;
-  /** Injectable white-label brand; default null → "SABRO · Client <id>". */
   lookupBrand?: BrandLookup;
-  /** Injectable tenant map for tests; does not alter fail-closed guard logic. */
   lookupTenant?: TenantLookup;
 };
 
 function surfaceTitle(surface: string): string {
   switch (surface) {
+    case "overview":
+      return "Overview";
     case "pipeline":
       return "Pipeline";
+    case "missions":
+      return "Daily Missions";
     case "deals":
       return "Deal Management";
     case "insights":
@@ -61,7 +60,6 @@ function EmptyStateCard({ tenant }: { tenant: TenantMapping }) {
 const CALL4ME_TABS = ["Today's calls", "Active deals", "Contacts"] as const;
 type Call4MeTab = (typeof CALL4ME_TABS)[number];
 
-/** Shell IA → dialer panel. App hides its own subnav when tenantShell mounts. */
 function tabToPanel(tab: Call4MeTab): "todays-calls" | "active-deals" | "contacts" {
   switch (tab) {
     case "Active deals":
@@ -136,16 +134,36 @@ function Call4MeSurface({
   );
 }
 
+function MissionsSurface() {
+  return (
+    <main data-surface="missions" data-testid="missions-surface">
+      <header className="tenant-page-header">
+        <h1 className="tenant-page-title">Daily Missions</h1>
+        <p className="tenant-page-subtitle">AI Engine · EMPTY-SAFE until live missions bridge</p>
+      </header>
+      <div className="tenant-card">
+        <div className="tenant-card-body">
+          <p role="status">No missions yet — empty-safe</p>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 function SurfacePage({
   surface,
   clientId,
   tenant,
   accessToken,
+  fetchImpl,
+  onNavigate,
 }: {
   surface: string;
   clientId: string;
   tenant: TenantMapping;
   accessToken?: string | null;
+  fetchImpl?: typeof fetch;
+  onNavigate?: (path: string) => void;
 }) {
   if (surface === "call4me") {
     return (
@@ -155,6 +173,33 @@ function SurfacePage({
         accessToken={accessToken}
       />
     );
+  }
+  if (surface === "overview") {
+    return (
+      <OverviewSurface
+        clientId={clientId}
+        accessToken={accessToken}
+        fetchImpl={fetchImpl}
+        onNavigate={onNavigate}
+      />
+    );
+  }
+  if (surface === "pipeline") {
+    return (
+      <main data-surface="pipeline" data-client-id={clientId}>
+        <PipelineBoard
+          clientId={clientId}
+          accessToken={accessToken}
+          fetchImpl={fetchImpl}
+          onOpenDealManagement={(dealId) => {
+            onNavigate?.(`/c/${clientId}/deals?deal=${encodeURIComponent(dealId)}`);
+          }}
+        />
+      </main>
+    );
+  }
+  if (surface === "missions") {
+    return <MissionsSurface />;
   }
   return (
     <main data-surface={surface} data-client-id={clientId}>
@@ -184,8 +229,7 @@ function ResolvingSurface({ surface, clientId }: { surface: string; clientId: st
 /**
  * Path shell: fail-closed guard (Stage A) + Amplify IA chrome (Stage B)
  * + same-origin tenant-map resolve (Stage C).
- * EMPTY-SAFE: empty-state cards only; ZERO CRM/deals fetches.
- * The ONLY network call after the guard passes is GET /sabro-auth/tenant-map.
+ * Pipeline = Amplify kanban DnD port; Overview/Missions restored.
  * Denied states render without nav/brand (no chrome leak).
  */
 export function TenantShell({
@@ -198,7 +242,6 @@ export function TenantShell({
   lookupBrand = emptyBrandLookup,
   lookupTenant,
 }: TenantShellProps) {
-  // Stage A sync guard — injectable lookup for tests; production uses empty.
   const result = evaluateTenantAccess({
     pathname,
     identity: identityAppMetadata ? { app_metadata: identityAppMetadata } : null,
@@ -216,7 +259,6 @@ export function TenantShell({
     tenant: TenantMapping;
   } | null>(null);
 
-  // Ignore cached React state when clientId or access-token identity changed.
   const bridgeTenant =
     resolveKey && resolved && resolved.key === resolveKey ? resolved.tenant : null;
 
@@ -231,7 +273,6 @@ export function TenantShell({
     redirect(target);
   }, [result, onRedirect]);
 
-  // Bridge resolve ONLY after guard ok (and not on root redirect). Never on deny.
   useEffect(() => {
     if (!result.ok || result.surface === "root") {
       return;
@@ -327,6 +368,8 @@ export function TenantShell({
             clientId={result.clientId}
             tenant={tenant}
             accessToken={accessToken}
+            fetchImpl={fetchImpl}
+            onNavigate={onNavigate}
           />
         )}
       </div>

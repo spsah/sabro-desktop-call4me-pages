@@ -48,16 +48,16 @@ describe("TenantShell Stage A", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders the pipeline shell for an allowed identity on /c/6402/pipeline", () => {
+  it("renders the pipeline kanban for an allowed identity on /c/6402/pipeline", () => {
     render(
       <TenantShell
         pathname="/c/6402/pipeline"
         identityAppMetadata={sessionWithClients([6402]).user.app_metadata}
       />,
     );
-    expect(screen.getByRole("heading", { name: /^pipeline$/i })).toBeInTheDocument();
-    expect(screen.getByText(/Data not connected/i)).toBeInTheDocument();
-    expect(screen.getByText(/tenant not mapped — data disabled/i)).toBeInTheDocument();
+    expect(screen.getByTestId("pipeline-kanban")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /pipeline kanban board/i })).toBeInTheDocument();
+    expect(screen.queryByText(/Data not connected/i)).not.toBeInTheDocument();
   });
 
   it("renders a 403 view for /c/9999/pipeline even if the claim lists 9999", () => {
@@ -139,10 +139,10 @@ describe("TenantShell Stage C tenant-map", () => {
       />,
     );
     expect(screen.getByText(/Resolving tenant/i)).toBeInTheDocument();
-    expect(await screen.findByText(/Tenant mapped — data not connected yet/i)).toBeInTheDocument();
+    expect(await screen.findByTestId("pipeline-kanban")).toBeInTheDocument();
     expect(screen.queryByText(SYNTHETIC_TENANT_ID)).not.toBeInTheDocument();
     expect(document.body.innerHTML).not.toContain(SYNTHETIC_TENANT_ID);
-    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(fetchImpl).toHaveBeenCalled();
     const [url, init] = fetchCall(fetchImpl);
     expect(String(url)).toBe("/sabro-auth/tenant-map?client_id=6402");
     expect(String(url).startsWith("/sabro-auth/")).toBe(true);
@@ -159,7 +159,7 @@ describe("TenantShell Stage C tenant-map", () => {
         fetchImpl={fetchImpl}
       />,
     );
-    expect(await screen.findByText(/tenant not mapped — data disabled/i)).toBeInTheDocument();
+    expect(await screen.findByTestId("pipeline-kanban")).toBeInTheDocument();
   });
 
   it.each([
@@ -236,7 +236,7 @@ describe("TenantShell Stage C tenant-map", () => {
         fetchImpl={fetchImpl}
       />,
     );
-    await screen.findByText(/Tenant mapped — data not connected yet/i);
+    await screen.findByTestId("pipeline-kanban");
     expect(document.body.innerHTML).not.toContain(SYNTHETIC_TENANT_ID);
     unmount();
 
@@ -248,9 +248,9 @@ describe("TenantShell Stage C tenant-map", () => {
         fetchImpl={fetchImpl}
       />,
     );
-    await screen.findByText(/Tenant mapped — data not connected yet/i);
+    await screen.findByTestId("pipeline-kanban");
     expect(document.body.innerHTML).not.toContain(otherId);
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(fetchImpl.mock.calls.filter((c) => String(c[0]).includes("tenant-map")).length).toBe(2);
   });
 
   it("does not introduce NEXT_PUBLIC_TENANT_ID, MMPL, or Ice product strings", async () => {
@@ -265,7 +265,7 @@ describe("TenantShell Stage C tenant-map", () => {
         fetchImpl={fetchImpl}
       />,
     );
-    await screen.findByText(/Tenant mapped — data not connected yet/i);
+    await screen.findByTestId("pipeline-kanban");
     const html = document.body.innerHTML;
     expect(html).not.toMatch(/NEXT_PUBLIC_TENANT_ID/);
     expect(html).not.toMatch(/MMPL/i);
